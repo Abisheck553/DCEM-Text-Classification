@@ -7,11 +7,17 @@ def _freeze_base(base_model):
         layer.trainable = False
 
 
-def build_dcem(num_classes: int, backbone: str = "vgg16", input_shape: tuple = (224, 224, 3)) -> models.Model:
+def build_dcem(
+    num_classes: int,
+    backbone: str = "vgg16",
+    input_shape: tuple = (224, 224, 3),
+    weights: str = "imagenet",
+) -> models.Model:
     """
     Deep Convolutional Encoder Model (DCEM).
     Encoder -> Bottleneck (latent representation) -> Classifier (softmax).
     Backbone choices: 'vgg16', 'resnet50', 'inception' (InceptionV3).
+    `weights="imagenet"` loads pre-trained encoder weights; pass None for an untrained build.
     """
     if backbone == "inception":
         input_shape = (299, 299, 3)
@@ -19,11 +25,11 @@ def build_dcem(num_classes: int, backbone: str = "vgg16", input_shape: tuple = (
     inputs = layers.Input(shape=input_shape, name="input_image")
 
     if backbone == "vgg16":
-        base = applications.VGG16(weights="imagenet", include_top=False, input_shape=input_shape)
+        base = applications.VGG16(weights=weights, include_top=False, input_shape=input_shape)
     elif backbone == "resnet50":
-        base = applications.ResNet50(weights="imagenet", include_top=False, input_shape=input_shape)
+        base = applications.ResNet50(weights=weights, include_top=False, input_shape=input_shape)
     elif backbone == "inception":
-        base = applications.InceptionV3(weights="imagenet", include_top=False, input_shape=input_shape)
+        base = applications.InceptionV3(weights=weights, include_top=False, input_shape=input_shape)
     else:
         raise ValueError(f"Unknown backbone: {backbone}. Choose 'vgg16', 'resnet50', or 'inception'.")
 

@@ -35,7 +35,8 @@ def evaluate_model(
     _, h, w, _ = model.input_shape
     img_size = (h, w)
 
-    backbone = "inception" if max(h, w) == 299 else ("resnet50" if "resnet" in model_path else "vgg16")
+    name = f"{model.name} {os.path.basename(model_path)}".lower()
+    backbone = "inception" if max(h, w) == 299 else ("resnet50" if "resnet" in name else "vgg16")
     test_gen = get_test_generator(test_dir, img_size=img_size, batch_size=batch_size, backbone=backbone)
 
     print("[Evaluate] Running predictions...")
@@ -46,7 +47,7 @@ def evaluate_model(
 
     # ── Classification report ─────────────────────────────────────────────────
     print("\n── Classification Report ──────────────────────────────")
-    report = classification_report(y_true, y_pred, target_names=labels, digits=2)
+    report = classification_report(y_true, y_pred, target_names=labels, digits=3)
     print(report)
     with open(os.path.join(output_dir, "classification_report.txt"), "w") as f:
         f.write(report)

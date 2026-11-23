@@ -1,0 +1,36 @@
+{
+  "resnet50": {
+    "test_images": 200,
+    "accuracy": 0.915,
+    "macro_f1": 0.9145,
+    "per_class_f1": {
+      "animal": 0.952,
+      "animation": 0.884,
+      "concert": 0.952,
+      "cooking": 0.878,
+      "craft": 0.821,
+      "elearning": 0.9,
+      "outlet": 0.974,
+      "technology": 0.976,
+      "teleshopping": 0.919,
+      "yoga": 0.889
+    }
+  },
+  "vgg16": {
+    "test_images": 200,
+    "accuracy": 0.6,
+    "macro_f1": 0.5667,
+    "per_class_f1": {
+      "animal": 0.833,
+      "animation": 0.444,
+      "concert": 0.576,
+      "cooking": 0.706,
+      "craft": 0.37,
+      "elearning": 0.308,
+      "outlet": 0.683,
+      "technology": 0.8,
+      "teleshopping": 0.261,
+      "yoga": 0.686
+    }
+  }
+}

@@ -5,14 +5,16 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import vgg16, resnet50, inception_v3
 
 
-# 10 classes from the paper (5 proposed + 5 from STD)
-CLASSES = [
+# 10 classes from the paper (5 proposed + 5 from STD).
+# Kept in alphabetical order on purpose: Keras' flow_from_directory assigns
+# label indices alphabetically, so index i of a model output is CLASSES[i].
+CLASSES = sorted([
     "yoga", "teleshopping", "craft", "cooking", "concert",
     "animal", "outlet", "technology", "elearning", "animation",
-]
+])
 
 # Extended 15-class version (full STD dataset from paper)
-CLASSES_FULL = CLASSES + ["weather", "medical", "sports", "economics", "defenses"]
+CLASSES_FULL = sorted(CLASSES + ["weather", "medical", "sports", "economics", "defenses"])
 
 IMG_SIZE_VGG     = (224, 224)
 IMG_SIZE_INCEPTION = (299, 299)

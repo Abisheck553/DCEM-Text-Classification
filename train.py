@@ -7,12 +7,13 @@ from model import build_dcem, build_multitask_dcem, unfreeze_top_layers
 from dataset import get_data_generators, CLASSES, IMG_SIZE_VGG, IMG_SIZE_INCEPTION
 
 
-def get_callbacks(checkpoint_path: str, log_dir: str) -> list:
+def get_callbacks(checkpoint_path: str, log_dir: str, best_so_far: float = None) -> list:
     cb_list = [
         callbacks.ModelCheckpoint(
             filepath=checkpoint_path,
             monitor="val_accuracy",
             save_best_only=True,
+            initial_value_threshold=best_so_far,
             verbose=1,
         ),
         callbacks.EarlyStopping(
@@ -91,11 +92,12 @@ def train(
         metrics=["accuracy"],
     )
 
+    best_phase1 = max(history_phase1.history.get("val_accuracy", [0.0]))
     history_phase2 = model.fit(
         train_gen,
         epochs=fine_tune_epochs,
         validation_data=val_gen,
-        callbacks=get_callbacks(checkpoint_path, log_dir),
+        callbacks=get_callbacks(checkpoint_path, log_dir, best_so_far=best_phase1),
     )
 
     # Save final model
@@ -113,7 +115,14 @@ def train_multitask(
     batch_size: int = 32,
     output_dir: str = "output",
 ):
-    """Train the multi-task DCEM (classification + text detection)."""
+    """
+    Train the multi-task DCEM (classification + text detection).
+
+    EXPERIMENTAL: the dataset has no text-presence annotations, so every image is
+    given detection label 1. The detection head therefore learns nothing useful
+    until real labels are added. The classification head trains normally.
+    """
+    print("[DCEM] Warning: multitask detection labels are placeholders (all 1).")
     os.makedirs(output_dir, exist_ok=True)
 
     train_gen, val_gen, class_indices = get_data_generators(

@@ -27,14 +27,18 @@ def predict_image(
     model = tf.keras.models.load_model(model_path)
 
     _, h, w, _ = model.input_shape
-    img_array = load_single_image(image_path, img_size=(h, w))
+    backbone = _infer_backbone(model, model_path)
+    img_array = load_single_image(image_path, img_size=(h, w), backbone=backbone)
 
     probs = model.predict(img_array, verbose=0)[0]
+    if len(probs) != len(class_names):
+        raise ValueError(
+            f"Model predicts {len(probs)} classes but {len(class_names)} class names were given."
+        )
     top_indices = np.argsort(probs)[::-1][:top_k]
 
     results = [
-        {"class": class_names[i] if i < len(class_names) else f"class_{i}",
-         "confidence": float(probs[i]) * 100}
+        {"class": class_names[i], "confidence": float(probs[i]) * 100}
         for i in top_indices
     ]
 
@@ -48,6 +52,16 @@ def predict_image(
     _save_prediction_plot(image_path, results, probs, class_names, output_dir)
 
     return {"image": image_path, "predictions": results, "all_probs": probs.tolist()}
+
+
+def _infer_backbone(model, model_path: str) -> str:
+    """Pick the preprocessing that matches how the model was trained."""
+    name = f"{model.name} {os.path.basename(model_path)}".lower()
+    if "inception" in name or model.input_shape[1] == 299:
+        return "inception"
+    if "resnet" in name:
+        return "resnet50"
+    return "vgg16"
 
 
 def predict_batch(

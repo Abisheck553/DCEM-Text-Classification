@@ -6,3 +6,7 @@ __pycache__/
 *.keras
 *.pyc
 .DS_Store
+.claude/
+.pytest_cache/
+image.jpg
+*.tgz

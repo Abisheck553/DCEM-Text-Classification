@@ -1,0 +1,16 @@
+              precision    recall  f1-score   support
+
+      animal      0.938     0.750     0.833        20
+   animation      0.400     0.500     0.444        20
+     concert      0.413     0.950     0.576        20
+     cooking      0.581     0.900     0.706        20
+       craft      0.714     0.250     0.370        20
+   elearning      0.667     0.200     0.308        20
+      outlet      0.667     0.700     0.683        20
+  technology      0.667     1.000     0.800        20
+teleshopping      1.000     0.150     0.261        20
+        yoga      0.800     0.600     0.686        20
+
+    accuracy                          0.600       200
+   macro avg      0.685     0.600     0.567       200
+weighted avg      0.685     0.600     0.567       200
